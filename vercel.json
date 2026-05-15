@@ -1,6 +1,7 @@
 {
   "redirects": [
-    { "source": "/", "destination": "/login.html", "permanent": false }
+    { "source": "/", "destination": "/login.html", "permanent": false },
+    { "source": "/wireframes", "destination": "/wireframes/index.html", "permanent": false }
   ],
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/index.py" },
