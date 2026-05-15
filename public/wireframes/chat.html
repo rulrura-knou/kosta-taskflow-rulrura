@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>채팅 와이어프레임</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f8fafc;color:#1e293b}
+header{background:#0d9488;color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+header h1{font-size:1.1rem;font-weight:700}
+header p{font-size:.78rem;opacity:.8;margin-top:2px}
+nav{display:flex;flex-wrap:wrap;gap:5px}
+nav a{color:#fff;text-decoration:none;font-size:.78rem;padding:4px 10px;border-radius:6px;background:rgba(255,255,255,.15)}
+nav a:hover,nav a.active{background:rgba(255,255,255,.32)}
+.container{max-width:1380px;margin:0 auto;padding:24px 20px}
+.section{margin-bottom:40px}
+.section h2{font-size:.95rem;font-weight:600;color:#0d9488;border-bottom:2px solid #ccfbf1;padding-bottom:7px;margin-bottom:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.card{background:#fff;border-radius:10px;border:1px solid #e2e8f0;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06);cursor:zoom-in;transition:box-shadow .15s,transform .1s}
+.card:hover{box-shadow:0 6px 16px rgba(0,0,0,.1);transform:translateY(-2px)}
+.card img{width:100%;display:block}
+.card p{padding:5px 10px;font-size:.7rem;color:#64748b;text-align:center;background:#f8fafc;border-top:1px solid #f1f5f9}
+#lb{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:100;align-items:center;justify-content:center}
+#lb.open{display:flex}
+#lb img{max-width:90vw;max-height:88vh;border-radius:8px;box-shadow:0 24px 64px rgba(0,0,0,.6)}
+.lb-btn{position:absolute;color:#fff;cursor:pointer;font-size:2rem;line-height:1;padding:8px 14px;background:rgba(255,255,255,.12);border-radius:8px;user-select:none;transition:background .15s}
+.lb-btn:hover{background:rgba(255,255,255,.25)}
+#lb-close{top:14px;right:14px;font-size:1.3rem;padding:6px 11px}
+#lb-prev{left:12px;top:50%;transform:translateY(-50%)}
+#lb-next{right:12px;top:50%;transform:translateY(-50%)}
+#lb-info{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.55);font-size:.78rem}</style>
+</head>
+<body>
+<header>
+  <div><h1>TaskFlow MVP</h1><p>채팅</p></div>
+  <nav><a href="index.html">전체</a><a href="login.html">로그인</a><a href="team.html">팀 선택</a><a href="kanban.html">칸반</a><a href="chat.html" class="active">채팅</a><a href="mobile.html">모바일</a><a href="system.html">시스템</a><a href="errors.html">에러/스펙</a></nav>
+</header>
+<div class="container"><div class="section"><h2>E. 채팅</h2><div class="grid"><div class="card"><img src="page_23.png" loading="lazy"><p>Slide 23</p></div><div class="card"><img src="page_24.png" loading="lazy"><p>Slide 24</p></div><div class="card"><img src="page_25.png" loading="lazy"><p>Slide 25</p></div><div class="card"><img src="page_26.png" loading="lazy"><p>Slide 26</p></div><div class="card"><img src="page_27.png" loading="lazy"><p>Slide 27</p></div></div></div></div>
+<div id="lb">
+  <span class="lb-btn" id="lb-close">&#10005;</span>
+  <span class="lb-btn" id="lb-prev">&#8249;</span>
+  <img id="lb-img" src="">
+  <span class="lb-btn" id="lb-next">&#8250;</span>
+  <span id="lb-info"></span>
+</div>
+<script>const imgs=Array.from(document.querySelectorAll(".card img"));
+let cur=0;
+imgs.forEach((img,i)=>img.parentElement.addEventListener("click",()=>openLb(i)));
+function openLb(i){cur=i;render();document.getElementById("lb").classList.add("open");}
+function closeLb(){document.getElementById("lb").classList.remove("open");}
+function lbMove(d){cur=(cur+d+imgs.length)%imgs.length;render();}
+function render(){document.getElementById("lb-img").src=imgs[cur].src;document.getElementById("lb-info").textContent=(cur+1)+" / "+imgs.length;}
+document.getElementById("lb-close").onclick=closeLb;
+document.getElementById("lb-prev").onclick=()=>lbMove(-1);
+document.getElementById("lb-next").onclick=()=>lbMove(1);
+document.getElementById("lb").addEventListener("click",e=>{if(e.target.id==="lb")closeLb();});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeLb();if(e.key==="ArrowRight")lbMove(1);if(e.key==="ArrowLeft")lbMove(-1);});</script>
+</body>
+</html>
