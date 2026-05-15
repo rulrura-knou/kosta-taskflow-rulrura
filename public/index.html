@@ -2,12 +2,6 @@
 <html lang="ko">
 <head><meta charset="UTF-8"><title>TaskFlow</title></head>
 <body>
-<script>
-  const token = localStorage.getItem("token");
-  const user = JSON.parse(localStorage.getItem("user") || "null");
-  if (!token) location.replace("/login.html");
-  else if (!user?.team_id) location.replace("/team.html");
-  else location.replace("/kanban.html");
-</script>
+<script>location.replace("/login.html");</script>
 </body>
 </html>
