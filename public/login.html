@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TaskFlow — 로그인</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-slate-50 flex items-center justify-center px-4">
+<div class="w-full max-w-sm">
+  <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+    <div class="flex justify-center mb-6">
+      <span class="bg-teal-600 text-white text-lg font-bold px-4 py-2 rounded-xl">TaskFlow</span>
+    </div>
+    <h1 class="text-xl font-semibold text-slate-800 text-center mb-6">로그인</h1>
+
+    <div id="err" class="hidden mb-4 px-3 py-2 bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg"></div>
+
+    <form id="form" class="space-y-4">
+      <input id="email" type="email" placeholder="이메일 입력"
+        class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500">
+      <input id="password" type="password" placeholder="비밀번호"
+        class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500">
+      <button id="btn" type="submit"
+        class="w-full bg-teal-600 hover:bg-teal-700 text-white font-medium py-2 rounded-lg text-sm transition-colors">
+        로그인
+      </button>
+    </form>
+
+    <p class="mt-4 text-center text-sm text-slate-500">
+      계정이 없으신가요?
+      <a href="/signup.html" class="text-teal-600 hover:underline font-medium">회원가입</a>
+    </p>
+  </div>
+</div>
+
+<script src="/app.js"></script>
+<script>
+  if (getToken()) {
+    const u = getUser();
+    location.href = u?.team_id ? "/kanban.html" : "/team.html";
+  }
+
+  document.getElementById("form").addEventListener("submit", async e => {
+    e.preventDefault();
+    const errEl = document.getElementById("err");
+    const btn = document.getElementById("btn");
+    hideError(errEl);
+    setLoading(btn, true);
+    try {
+      const data = await api("POST", "/auth/login", {
+        email: document.getElementById("email").value,
+        password: document.getElementById("password").value,
+      });
+      setAuth(data.token, data.user);
+      location.href = data.user.team_id ? "/kanban.html" : "/team.html";
+    } catch (e) {
+      showError(errEl, e.message || "로그인 실패");
+      setLoading(btn, false);
+    }
+  });
+</script>
+</body>
+</html>
