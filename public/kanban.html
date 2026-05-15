@@ -8,6 +8,7 @@
   .card[draggable=true]{cursor:grab}
   .card[draggable=true]:active{cursor:grabbing}
   .col-drop{border:2px dashed #0d9488 !important;background:#f0fdfa !important}
+  @media(max-width:767px){.mobile-hidden{display:none!important}}
 </style>
 </head>
 <body class="min-h-screen bg-slate-100">
@@ -17,44 +18,54 @@
   <div class="max-w-6xl mx-auto flex items-center justify-between gap-4">
     <div class="flex items-center gap-3">
       <span class="bg-teal-600 text-white text-sm font-bold px-3 py-1 rounded-lg">TaskFlow</span>
-      <span id="teamName" class="text-sm font-medium text-slate-600"></span>
+      <span id="teamName" class="text-sm font-medium text-slate-600 hidden sm:block"></span>
     </div>
     <nav class="flex gap-1">
-      <a href="/kanban.html" class="px-3 py-1.5 bg-teal-600 text-white text-sm rounded-lg font-medium">칸반</a>
-      <a href="/chat.html"   class="px-3 py-1.5 text-slate-600 hover:bg-slate-100 text-sm rounded-lg">채팅</a>
+      <a href="/kanban.html"  class="px-3 py-1.5 bg-teal-600 text-white text-sm rounded-lg font-medium">칸반</a>
+      <a href="/chat.html"    class="px-3 py-1.5 text-slate-600 hover:bg-slate-100 text-sm rounded-lg">채팅</a>
       <a href="/members.html" class="px-3 py-1.5 text-slate-600 hover:bg-slate-100 text-sm rounded-lg">멤버</a>
     </nav>
     <div class="flex items-center gap-2">
-      <span id="userEmail" class="text-xs text-slate-500 hidden md:block"></span>
+      <span id="userEmail" class="text-xs text-slate-500 hidden lg:block"></span>
       <button onclick="doLogout()" class="text-xs text-slate-400 hover:text-slate-600">로그아웃</button>
     </div>
   </div>
 </header>
 
+<!-- Mobile column tabs -->
+<div class="md:hidden bg-white border-b border-slate-200 px-4">
+  <div class="flex">
+    <button data-col="TODO"  onclick="setMobileCol('TODO')"  class="mobile-col-tab flex-1 py-2.5 text-sm font-medium text-amber-600 border-b-2 border-amber-500">TODO</button>
+    <button data-col="DOING" onclick="setMobileCol('DOING')" class="mobile-col-tab flex-1 py-2.5 text-sm font-medium text-slate-400 border-b-2 border-transparent">DOING</button>
+    <button data-col="DONE"  onclick="setMobileCol('DONE')"  class="mobile-col-tab flex-1 py-2.5 text-sm font-medium text-slate-400 border-b-2 border-transparent">DONE</button>
+  </div>
+</div>
+
 <!-- Filter bar -->
-<div class="max-w-6xl mx-auto px-4 pt-4 flex items-center justify-between flex-wrap gap-2">
+<div class="max-w-6xl mx-auto px-4 pt-3 pb-1 flex items-center justify-between flex-wrap gap-2">
   <div class="flex gap-1">
     <button data-filter="all"        onclick="setFilter('all')"        class="filter-btn px-3 py-1 text-sm rounded-full bg-slate-800 text-white">전체</button>
     <button data-filter="me"         onclick="setFilter('me')"         class="filter-btn px-3 py-1 text-sm rounded-full bg-white text-slate-600 border border-slate-300">@me</button>
     <button data-filter="unassigned" onclick="setFilter('unassigned')" class="filter-btn px-3 py-1 text-sm rounded-full bg-white text-slate-600 border border-slate-300">미할당</button>
   </div>
-  <span class="text-xs text-slate-400">정렬: 최근 생성순</span>
+  <span class="text-xs text-slate-400">정렬: 최근 생성순 ▼</span>
 </div>
 
 <!-- Board -->
-<main class="max-w-6xl mx-auto px-4 py-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+<main class="max-w-6xl mx-auto px-4 py-3 grid grid-cols-1 md:grid-cols-3 gap-4">
+
   <!-- TODO -->
-  <div id="col-TODO" class="bg-amber-50 border border-amber-200 rounded-xl p-3" ondragover="onDragOver(event)" ondrop="onDrop(event,'TODO')" ondragleave="onDragLeave(event)">
+  <div id="col-TODO" data-col="TODO" class="mobile-col bg-amber-50 border border-amber-200 rounded-xl p-3"
+    ondragover="onDragOver(event)" ondrop="onDrop(event,'TODO')" ondragleave="onDragLeave(event)">
     <div class="flex items-center justify-between mb-3">
       <h2 class="font-semibold text-amber-700 text-sm">TODO · <span id="cnt-TODO">0</span></h2>
-      <button onclick="startAdd('TODO')" class="text-amber-600 hover:text-amber-800 text-lg font-bold leading-none">+</button>
+      <button onclick="startAdd('TODO')" class="text-amber-600 hover:text-amber-800 text-lg font-bold leading-none w-6 h-6 flex items-center justify-center rounded hover:bg-amber-100">+</button>
     </div>
     <div id="cards-TODO" class="space-y-2 min-h-8"></div>
-    <!-- Inline add form -->
     <div id="add-TODO" class="hidden mt-2 bg-white border-2 border-teal-400 rounded-lg p-2 space-y-2">
       <input id="add-title-TODO" type="text" placeholder="태스크 제목" maxlength="100"
-        class="w-full text-sm px-2 py-1 border border-slate-200 rounded focus:outline-none focus:ring-1 focus:ring-teal-400">
-      <select id="add-assignee-TODO" class="w-full text-sm px-2 py-1 border border-slate-200 rounded focus:outline-none">
+        class="w-full text-sm px-2 py-1.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-teal-400">
+      <select id="add-assignee-TODO" class="w-full text-sm px-2 py-1 border border-slate-200 rounded-lg focus:outline-none">
         <option value="">담당자 선택 (선택사항)</option>
       </select>
       <p class="text-xs text-slate-400">Enter: 저장 · Esc: 취소</p>
@@ -62,62 +73,95 @@
   </div>
 
   <!-- DOING -->
-  <div id="col-DOING" class="bg-blue-50 border border-blue-200 rounded-xl p-3" ondragover="onDragOver(event)" ondrop="onDrop(event,'DOING')" ondragleave="onDragLeave(event)">
+  <div id="col-DOING" data-col="DOING" class="mobile-col mobile-hidden bg-blue-50 border border-blue-200 rounded-xl p-3"
+    ondragover="onDragOver(event)" ondrop="onDrop(event,'DOING')" ondragleave="onDragLeave(event)">
     <div class="flex items-center justify-between mb-3">
       <h2 class="font-semibold text-blue-700 text-sm">DOING · <span id="cnt-DOING">0</span></h2>
-      <button onclick="startAdd('DOING')" class="text-blue-600 hover:text-blue-800 text-lg font-bold leading-none">+</button>
+      <button onclick="startAdd('DOING')" class="text-blue-600 hover:text-blue-800 text-lg font-bold leading-none w-6 h-6 flex items-center justify-center rounded hover:bg-blue-100">+</button>
     </div>
     <div id="cards-DOING" class="space-y-2 min-h-8"></div>
     <div id="add-DOING" class="hidden mt-2 bg-white border-2 border-teal-400 rounded-lg p-2 space-y-2">
       <input id="add-title-DOING" type="text" placeholder="태스크 제목" maxlength="100"
-        class="w-full text-sm px-2 py-1 border border-slate-200 rounded focus:outline-none focus:ring-1 focus:ring-teal-400">
-      <select id="add-assignee-DOING" class="w-full text-sm px-2 py-1 border border-slate-200 rounded focus:outline-none"></select>
+        class="w-full text-sm px-2 py-1.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-teal-400">
+      <select id="add-assignee-DOING" class="w-full text-sm px-2 py-1 border border-slate-200 rounded-lg focus:outline-none"></select>
       <p class="text-xs text-slate-400">Enter: 저장 · Esc: 취소</p>
     </div>
   </div>
 
   <!-- DONE -->
-  <div id="col-DONE" class="bg-green-50 border border-green-200 rounded-xl p-3" ondragover="onDragOver(event)" ondrop="onDrop(event,'DONE')" ondragleave="onDragLeave(event)">
+  <div id="col-DONE" data-col="DONE" class="mobile-col mobile-hidden bg-green-50 border border-green-200 rounded-xl p-3"
+    ondragover="onDragOver(event)" ondrop="onDrop(event,'DONE')" ondragleave="onDragLeave(event)">
     <div class="flex items-center justify-between mb-3">
       <h2 class="font-semibold text-green-700 text-sm">DONE · <span id="cnt-DONE">0</span></h2>
-      <button onclick="startAdd('DONE')" class="text-green-600 hover:text-green-800 text-lg font-bold leading-none">+</button>
+      <button onclick="startAdd('DONE')" class="text-green-600 hover:text-green-800 text-lg font-bold leading-none w-6 h-6 flex items-center justify-center rounded hover:bg-green-100">+</button>
     </div>
     <div id="cards-DONE" class="space-y-2 min-h-8"></div>
     <div id="add-DONE" class="hidden mt-2 bg-white border-2 border-teal-400 rounded-lg p-2 space-y-2">
       <input id="add-title-DONE" type="text" placeholder="태스크 제목" maxlength="100"
-        class="w-full text-sm px-2 py-1 border border-slate-200 rounded focus:outline-none focus:ring-1 focus:ring-teal-400">
-      <select id="add-assignee-DONE" class="w-full text-sm px-2 py-1 border border-slate-200 rounded focus:outline-none"></select>
+        class="w-full text-sm px-2 py-1.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-teal-400">
+      <select id="add-assignee-DONE" class="w-full text-sm px-2 py-1 border border-slate-200 rounded-lg focus:outline-none"></select>
       <p class="text-xs text-slate-400">Enter: 저장 · Esc: 취소</p>
     </div>
   </div>
+
 </main>
 
-<!-- Task Detail Modal -->
+<!-- Mobile FAB -->
+<button id="fab" onclick="startAdd(mobileCol)"
+  class="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-teal-600 hover:bg-teal-700 text-white rounded-full shadow-xl text-2xl font-light flex items-center justify-center z-30">+</button>
+
+<!-- ── Task Detail Modal ── -->
 <div id="modal" class="hidden fixed inset-0 bg-black/50 z-40 flex items-center justify-center px-4">
-  <div class="bg-white rounded-xl shadow-xl w-full max-w-md p-6">
-    <div class="flex items-center justify-between mb-4">
-      <span id="modal-id" class="text-xs text-slate-400 font-mono"></span>
-      <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 text-xl leading-none">✕</button>
+  <div class="bg-white rounded-xl shadow-xl w-full max-w-lg">
+
+    <!-- Modal header -->
+    <div class="flex items-start gap-3 p-5 border-b border-slate-100">
+      <div class="flex-1 min-w-0">
+        <span id="modal-id" class="text-xs text-slate-400 font-mono block mb-1"></span>
+        <input id="modal-title" type="text" maxlength="100"
+          class="w-full text-xl font-semibold text-slate-800 focus:outline-none focus:border-b-2 focus:border-teal-400 border-b border-transparent pb-0.5">
+      </div>
+      <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 text-xl leading-none flex-shrink-0 mt-1">✕</button>
     </div>
-    <input id="modal-title" type="text" maxlength="100"
-      class="w-full text-lg font-semibold text-slate-800 border-b border-slate-200 pb-2 mb-4 focus:outline-none focus:border-teal-400">
-    <div class="space-y-3 text-sm">
-      <div class="flex items-center gap-2">
-        <span class="text-slate-500 w-16">상태</span>
-        <div class="flex gap-1" id="modal-status-btns"></div>
+
+    <!-- Modal body: 2-column -->
+    <div class="flex gap-4 p-5">
+
+      <!-- Left: info rows -->
+      <div class="flex-1 space-y-4 text-sm min-w-0">
+        <!-- 상태 -->
+        <div>
+          <p class="text-slate-500 text-xs mb-2">상태</p>
+          <div class="flex gap-1" id="modal-status-btns"></div>
+        </div>
+        <!-- 담당자 -->
+        <div>
+          <p class="text-slate-500 text-xs mb-2">담당자</p>
+          <select id="modal-assignee"
+            class="w-full text-sm border border-slate-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-teal-400"></select>
+        </div>
+        <!-- 생성자 -->
+        <div>
+          <p class="text-slate-500 text-xs mb-1">생성자</p>
+          <p id="modal-creator" class="text-slate-800 font-medium"></p>
+        </div>
+        <!-- 생성 시각 -->
+        <div>
+          <p class="text-slate-500 text-xs mb-1">생성 시각</p>
+          <p id="modal-created" class="text-slate-600"></p>
+        </div>
       </div>
-      <div class="flex items-center gap-2">
-        <span class="text-slate-500 w-16">담당자</span>
-        <select id="modal-assignee" class="text-sm border border-slate-200 rounded px-2 py-1 focus:outline-none"></select>
+
+      <!-- Right: action buttons stacked -->
+      <div class="flex flex-col gap-2 w-36 flex-shrink-0">
+        <button onclick="saveTask()"
+          class="w-full bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium py-2 rounded-lg">저장</button>
+        <button onclick="focusAssignee()"
+          class="w-full border border-slate-300 text-slate-600 text-sm py-2 rounded-lg hover:bg-slate-50">다른 담당자 지정</button>
+        <button id="modal-delete-btn" onclick="deleteTask()"
+          class="w-full border border-red-300 text-red-600 text-sm py-2 rounded-lg hover:bg-red-50">🗑 삭제</button>
       </div>
-      <div class="flex items-center gap-2">
-        <span class="text-slate-500 w-16">생성자</span>
-        <span id="modal-creator" class="text-slate-600"></span>
-      </div>
-    </div>
-    <div class="flex gap-2 mt-6">
-      <button onclick="saveTask()" class="flex-1 bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium py-2 rounded-lg">저장</button>
-      <button id="modal-delete-btn" onclick="deleteTask()" class="px-4 py-2 border border-red-300 text-red-600 text-sm rounded-lg hover:bg-red-50">🗑 삭제</button>
+
     </div>
   </div>
 </div>
@@ -126,16 +170,18 @@
 <script>
 if (!requireTeam()) {}
 
-const user = getUser();
-const teamId = user.team_id;
-let allTasks = [];
-let members = [];
-let currentFilter = "all";
-let dragTaskId = null;
-let editingTask = null;
+const user    = getUser();
+const teamId  = user.team_id;
+let allTasks       = [];
+let members        = [];
+let currentFilter  = "all";
+let dragTaskId     = null;
+let editingTask    = null;
+let mobileCol      = "TODO";
 
 document.getElementById("userEmail").textContent = user.email;
 
+// ── Init ─────────────────────────────────────────────────────────────────────
 async function init() {
   try {
     const [team, mems] = await Promise.all([
@@ -150,10 +196,10 @@ async function init() {
 }
 
 function populateAssigneeSelects() {
+  const opts = '<option value="">담당자 선택 (선택사항)</option>' +
+    members.map(m => `<option value="${m.id}">${m.email}${m.is_owner ? " ★" : ""}</option>`).join("");
   ["TODO","DOING","DONE"].forEach(s => {
-    const sel = document.getElementById(`add-assignee-${s}`);
-    sel.innerHTML = '<option value="">담당자 선택 (선택사항)</option>' +
-      members.map(m => `<option value="${m.id}">${m.email}${m.is_owner ? " ★" : ""}</option>`).join("");
+    document.getElementById(`add-assignee-${s}`).innerHTML = opts;
   });
 }
 
@@ -165,26 +211,28 @@ async function loadTasks() {
 function renderBoard() {
   ["TODO","DOING","DONE"].forEach(s => {
     const container = document.getElementById(`cards-${s}`);
-    const filtered = allTasks.filter(t => t.status === s);
+    const filtered  = allTasks.filter(t => t.status === s);
     document.getElementById(`cnt-${s}`).textContent = filtered.length;
     if (filtered.length === 0) {
-      container.innerHTML = `<div class="text-xs text-slate-400 text-center py-4">카드 없음${s === "TODO" ? '<br><button onclick="startAdd(\'TODO\')" class="mt-1 text-teal-600 hover:underline">+ 첫 태스크 만들기</button>' : ""}</div>`;
+      container.innerHTML = s === "TODO"
+        ? `<div class="text-xs text-slate-400 text-center py-6">📋<br>카드 없음<br><button onclick="startAdd('TODO')" class="mt-2 text-teal-600 hover:underline">+ 첫 태스크 만들기</button></div>`
+        : `<div class="text-xs text-slate-400 text-center py-6">📋<br>카드 없음<br><span class="text-slate-300">드래그로 이동</span></div>`;
     } else {
-      container.innerHTML = filtered.map(t => cardHTML(t)).join("");
+      container.innerHTML = filtered.map(cardHTML).join("");
     }
   });
 }
 
 function cardHTML(t) {
   const assignee = t.assignee_id
-    ? `<span class="text-teal-600">@${(t.assignee_email || "").split("@")[0]}</span>`
-    : `<span class="text-amber-500">⚠미할당</span>`;
-  return `<div class="card bg-white border border-slate-200 rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+    ? `<span class="text-teal-600">@${(t.assignee_email||"").split("@")[0]}</span>`
+    : `<span class="inline-flex items-center gap-0.5 text-amber-500"><span>⚠</span><span>미할당</span></span>`;
+  return `<div class="card bg-white border border-slate-200 rounded-lg p-3 shadow-sm hover:shadow-md transition-all cursor-pointer select-none"
     draggable="true" data-id="${t.id}"
     ondragstart="onDragStart(event,${t.id})"
     onclick="openModal(${t.id})">
-    <p class="text-sm font-medium text-slate-800 mb-1.5">${escHtml(t.title)}</p>
-    <p class="text-xs text-slate-400">#${t.id} · ${assignee}</p>
+    <p class="text-sm font-medium text-slate-800 mb-2 leading-snug">${escHtml(t.title)}</p>
+    <p class="text-xs text-slate-400 flex items-center gap-1">#${t.id} <span class="text-slate-300">·</span> ${assignee}</p>
   </div>`;
 }
 
@@ -192,14 +240,34 @@ function escHtml(s) {
   return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }
 
+// ── Mobile column tabs ────────────────────────────────────────────────────────
+const TAB_COLORS = {
+  TODO:  { text: "text-amber-600",  border: "border-amber-500" },
+  DOING: { text: "text-blue-600",   border: "border-blue-500"  },
+  DONE:  { text: "text-green-600",  border: "border-green-500" },
+};
+
+function setMobileCol(col) {
+  mobileCol = col;
+  document.querySelectorAll(".mobile-col").forEach(el => {
+    if (el.dataset.col === col) el.classList.remove("mobile-hidden");
+    else                         el.classList.add("mobile-hidden");
+  });
+  document.querySelectorAll(".mobile-col-tab").forEach(b => {
+    const active = b.dataset.col === col;
+    const c = TAB_COLORS[b.dataset.col];
+    b.className = `mobile-col-tab flex-1 py-2.5 text-sm font-medium border-b-2 ` +
+      (active ? `${c.text} ${c.border}` : "text-slate-400 border-transparent");
+  });
+}
+
 // ── Filter ────────────────────────────────────────────────────────────────────
 function setFilter(f) {
   currentFilter = f;
   document.querySelectorAll(".filter-btn").forEach(b => {
-    b.classList.toggle("bg-slate-800", b.dataset.filter === f);
-    b.classList.toggle("text-white", b.dataset.filter === f);
-    b.classList.toggle("bg-white", b.dataset.filter !== f);
-    b.classList.toggle("text-slate-600", b.dataset.filter !== f);
+    const on = b.dataset.filter === f;
+    b.className = `filter-btn px-3 py-1 text-sm rounded-full ` +
+      (on ? "bg-slate-800 text-white" : "bg-white text-slate-600 border border-slate-300");
   });
   loadTasks();
 }
@@ -213,17 +281,17 @@ function startAdd(status) {
   inp.value = "";
   inp.focus();
   inp.onkeydown = async e => {
-    if (e.key === "Enter") { e.preventDefault(); await submitAdd(status); }
+    if (e.key === "Enter")  { e.preventDefault(); await submitAdd(status); }
     if (e.key === "Escape") form.classList.add("hidden");
   };
 }
 
 async function submitAdd(status) {
   const title = document.getElementById(`add-title-${status}`).value.trim();
-  const assignee_id = document.getElementById(`add-assignee-${status}`).value || null;
+  const aVal  = document.getElementById(`add-assignee-${status}`).value;
   if (!title) return;
   try {
-    await api("POST", `/teams/${teamId}/tasks`, { title, assignee_id: assignee_id ? parseInt(assignee_id) : null, status });
+    await api("POST", `/teams/${teamId}/tasks`, { title, assignee_id: aVal ? parseInt(aVal) : null });
     document.getElementById(`add-${status}`).classList.add("hidden");
     await loadTasks();
   } catch (e) { toast(e.message || "생성 실패", "error"); }
@@ -231,7 +299,7 @@ async function submitAdd(status) {
 
 // ── Drag & Drop ───────────────────────────────────────────────────────────────
 function onDragStart(e, id) { dragTaskId = id; e.dataTransfer.effectAllowed = "move"; }
-function onDragOver(e) { e.preventDefault(); e.currentTarget.classList.add("col-drop"); }
+function onDragOver(e)  { e.preventDefault(); e.currentTarget.classList.add("col-drop"); }
 function onDragLeave(e) { e.currentTarget.classList.remove("col-drop"); }
 async function onDrop(e, newStatus) {
   e.preventDefault();
@@ -249,27 +317,36 @@ function openModal(id) {
   editingTask = allTasks.find(t => t.id === id);
   if (!editingTask) return;
   const t = editingTask;
-  document.getElementById("modal-id").textContent = `#${t.id}`;
-  document.getElementById("modal-title").value = t.title;
-  document.getElementById("modal-creator").textContent = "@" + (t.creator_email || "").split("@")[0];
 
-  // Status buttons
+  document.getElementById("modal-id").textContent    = `#${t.id}`;
+  document.getElementById("modal-title").value       = t.title;
+  document.getElementById("modal-created").textContent =
+    t.created_at ? t.created_at.slice(0,16).replace("T"," ") : "";
+
+  // 생성자
+  const creator = members.find(m => m.id === t.creator_id);
+  document.getElementById("modal-creator").textContent =
+    creator ? `@${creator.email.split("@")[0]} (${creator.email})` : `#${t.creator_id}`;
+
+  // 상태 버튼
   const btns = document.getElementById("modal-status-btns");
-  btns.innerHTML = ["TODO","DOING","DONE"].map(s => `
-    <button onclick="setModalStatus('${s}')"
-      class="status-btn px-2 py-0.5 text-xs rounded border ${t.status === s ? "bg-teal-600 text-white border-teal-600" : "text-slate-500 border-slate-300 hover:border-teal-400"}">
-      ${s}
-    </button>`).join("");
+  btns.innerHTML = ["TODO","DOING","DONE"].map(s => {
+    const active = t.status === s;
+    return `<button onclick="setModalStatus('${s}')"
+      class="status-btn px-3 py-1 text-xs rounded-lg border font-medium transition-colors
+      ${active ? "bg-teal-600 text-white border-teal-600" : "text-slate-500 border-slate-300 hover:border-teal-400 hover:text-teal-600"}">${s}</button>`;
+  }).join("");
 
-  // Assignee select
+  // 담당자 셀렉트
   const sel = document.getElementById("modal-assignee");
-  sel.innerHTML = '<option value="">미할당</option>' +
-    members.map(m => `<option value="${m.id}" ${t.assignee_id === m.id ? "selected" : ""}>${m.email}</option>`).join("");
+  sel.innerHTML = '<option value="">미할당 (null)</option>' +
+    members.map(m =>
+      `<option value="${m.id}" ${t.assignee_id === m.id ? "selected" : ""}>${m.email}${m.is_owner ? " ★" : ""}</option>`
+    ).join("");
 
-  // Delete button visibility: show only for creator or owner
-  const myId = user.id;
-  const ownerId = members.find(m => m.is_owner)?.id;
-  const canDelete = t.creator_id === myId || ownerId === myId;
+  // 삭제 버튼 권한
+  const ownerId  = members.find(m => m.is_owner)?.id;
+  const canDelete = t.creator_id === user.id || ownerId === user.id;
   document.getElementById("modal-delete-btn").classList.toggle("hidden", !canDelete);
 
   document.getElementById("modal").classList.remove("hidden");
@@ -279,33 +356,40 @@ function setModalStatus(s) {
   editingTask._newStatus = s;
   document.querySelectorAll(".status-btn").forEach(b => {
     const active = b.textContent.trim() === s;
-    b.classList.toggle("bg-teal-600", active);
-    b.classList.toggle("text-white", active);
-    b.classList.toggle("border-teal-600", active);
-    b.classList.toggle("text-slate-500", !active);
-    b.classList.toggle("border-slate-300", !active);
+    b.className = `status-btn px-3 py-1 text-xs rounded-lg border font-medium transition-colors ` +
+      (active ? "bg-teal-600 text-white border-teal-600"
+               : "text-slate-500 border-slate-300 hover:border-teal-400 hover:text-teal-600");
   });
 }
 
-function closeModal() { document.getElementById("modal").classList.add("hidden"); editingTask = null; }
+function focusAssignee() { document.getElementById("modal-assignee").focus(); }
+
+function closeModal() {
+  document.getElementById("modal").classList.add("hidden");
+  editingTask = null;
+}
 
 async function saveTask() {
   if (!editingTask) return;
-  const title = document.getElementById("modal-title").value.trim();
-  const assignee_id = document.getElementById("modal-assignee").value || null;
-  const newStatus = editingTask._newStatus || editingTask.status;
+  const title      = document.getElementById("modal-title").value.trim();
+  const aVal       = document.getElementById("modal-assignee").value;
+  const newStatus  = editingTask._newStatus || editingTask.status;
   try {
-    await api("PUT", `/tasks/${editingTask.id}`, { title, assignee_id: assignee_id ? parseInt(assignee_id) : null });
+    await api("PUT", `/tasks/${editingTask.id}`, {
+      title,
+      assignee_id: aVal ? parseInt(aVal) : null,
+    });
     if (newStatus !== editingTask.status)
       await api("PATCH", `/tasks/${editingTask.id}/status`, { status: newStatus });
     closeModal();
     await loadTasks();
+    toast("저장되었습니다", "success");
   } catch (e) { toast(e.message || "저장 실패", "error"); }
 }
 
 async function deleteTask() {
   if (!editingTask) return;
-  if (!confirm(`'${editingTask.title}' 을(를) 삭제하시겠습니까?`)) return;
+  if (!confirm(`'${editingTask.title}'\n삭제 후 되돌릴 수 없습니다. 계속하시겠습니까?`)) return;
   try {
     await api("DELETE", `/tasks/${editingTask.id}`);
     closeModal();
@@ -315,7 +399,6 @@ async function deleteTask() {
 
 function doLogout() { api("POST","/auth/logout"); clearAuth(); location.href="/login.html"; }
 
-// Close modal on backdrop click
 document.getElementById("modal").addEventListener("click", e => {
   if (e.target === document.getElementById("modal")) closeModal();
 });

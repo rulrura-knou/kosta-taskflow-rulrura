@@ -9,19 +9,25 @@
 
 <!-- Header -->
 <header class="bg-white border-b border-slate-200 px-4 py-3 flex-shrink-0">
-  <div class="max-w-3xl mx-auto flex items-center justify-between gap-4">
-    <div class="flex items-center gap-3">
-      <span class="bg-teal-600 text-white text-sm font-bold px-3 py-1 rounded-lg">TaskFlow</span>
-      <span id="teamName" class="text-sm font-medium text-slate-600"></span>
-      <span class="text-xs text-slate-400">· 채팅</span>
-      <span id="connStatus" class="text-xs text-teal-500">● 5초마다 새로고침</span>
+  <div class="max-w-3xl mx-auto flex items-center justify-between gap-3">
+    <!-- 좌: 로고 + 팀명 · 채팅 + 폴링 상태 -->
+    <div class="flex items-center gap-2 min-w-0">
+      <span class="bg-teal-600 text-white text-sm font-bold px-3 py-1 rounded-lg flex-shrink-0">TaskFlow</span>
+      <div class="flex items-center gap-1.5 min-w-0">
+        <span id="teamName" class="text-sm font-semibold text-slate-800 truncate"></span>
+        <span class="text-slate-400 text-sm flex-shrink-0">· 채팅</span>
+        <span id="connStatus" class="text-xs text-teal-500 flex-shrink-0 whitespace-nowrap">● 5초마다 새로고침</span>
+      </div>
     </div>
-    <nav class="flex gap-1">
-      <a href="/kanban.html" class="px-3 py-1.5 text-slate-600 hover:bg-slate-100 text-sm rounded-lg">칸반</a>
-      <a href="/chat.html"   class="px-3 py-1.5 bg-teal-600 text-white text-sm rounded-lg font-medium">채팅</a>
-      <a href="/members.html" class="px-3 py-1.5 text-slate-600 hover:bg-slate-100 text-sm rounded-lg">멤버</a>
-    </nav>
-    <button onclick="doLogout()" class="text-xs text-slate-400 hover:text-slate-600">로그아웃</button>
+    <!-- 우: 네비 + 로그아웃 -->
+    <div class="flex items-center gap-1 flex-shrink-0">
+      <nav class="flex gap-1">
+        <a href="/kanban.html"  class="px-3 py-1.5 text-slate-600 hover:bg-slate-100 text-sm rounded-lg">칸반</a>
+        <a href="/chat.html"    class="px-3 py-1.5 bg-teal-600 text-white text-sm rounded-lg font-medium">채팅</a>
+        <a href="/members.html" class="px-3 py-1.5 text-slate-600 hover:bg-slate-100 text-sm rounded-lg">멤버</a>
+      </nav>
+      <button onclick="doLogout()" class="ml-1 text-xs text-slate-400 hover:text-slate-600">로그아웃</button>
+    </div>
   </div>
 </header>
 
