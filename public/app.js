@@ -48,6 +48,24 @@ async function api(method, path, body) {
   return data;
 }
 
+// ── Theme ─────────────────────────────────────────────────────────────────────
+function initTheme() {
+  const saved  = localStorage.getItem("theme");
+  const prefer = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  setTheme(saved || prefer);
+}
+function setTheme(t) {
+  document.documentElement.setAttribute("data-theme", t);
+  localStorage.setItem("theme", t);
+  document.querySelectorAll(".theme-toggle").forEach(btn => {
+    btn.textContent = t === "dark" ? "☀️" : "🌙";
+    btn.title = t === "dark" ? "라이트 모드" : "다크 모드";
+  });
+}
+function toggleTheme() {
+  setTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark");
+}
+
 // ── UI Helpers ────────────────────────────────────────────────────────────────
 function showError(el, msg) {
   if (!el) return;

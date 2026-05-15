@@ -4,6 +4,35 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>TaskFlow — 로그인</title>
 <script src="https://cdn.tailwindcss.com"></script>
+<script>document.documentElement.setAttribute("data-theme",localStorage.getItem("theme")||(matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light"))</script>
+<style id="theme">
+:root,[data-theme=light]{--bg:#f8fafc;--surface:#ffffff;--surface2:#f1f5f9;--text:#1e293b;--text2:#64748b;--border:#e2e8f0}
+[data-theme=dark]{--bg:#0f172a;--surface:#1e293b;--surface2:#334155;--text:#f1f5f9;--text2:#94a3b8;--border:#334155}
+[data-theme=dark] body{background-color:var(--bg)!important;color:var(--text)!important}
+[data-theme=dark] .bg-white{background-color:var(--surface)!important}
+[data-theme=dark] .bg-slate-100{background-color:var(--bg)!important}
+[data-theme=dark] .bg-slate-50{background-color:var(--surface2)!important}
+[data-theme=dark] .bg-slate-800{background-color:#0f172a!important}
+[data-theme=dark] .text-slate-800,[data-theme=dark] .text-slate-900{color:var(--text)!important}
+[data-theme=dark] .text-slate-700,[data-theme=dark] .text-slate-600{color:var(--text2)!important}
+[data-theme=dark] .text-slate-500{color:#94a3b8!important}
+[data-theme=dark] .text-slate-400{color:#475569!important}
+[data-theme=dark] .border-slate-200,[data-theme=dark] .border-slate-100{border-color:var(--border)!important}
+[data-theme=dark] input,[data-theme=dark] textarea,[data-theme=dark] select{background-color:var(--surface2)!important;color:var(--text)!important;border-color:var(--border)!important}
+[data-theme=dark] input::placeholder,[data-theme=dark] textarea::placeholder{color:#475569!important}
+[data-theme=dark] .shadow-sm{box-shadow:0 1px 3px rgba(0,0,0,.5)!important}
+[data-theme=dark] .shadow-xl{box-shadow:0 20px 60px rgba(0,0,0,.7)!important}
+[data-theme=dark] .bg-amber-50{background-color:#1c1407!important}
+[data-theme=dark] .border-amber-200{border-color:#78350f!important}
+[data-theme=dark] .bg-blue-50{background-color:#0c1628!important}
+[data-theme=dark] .border-blue-200{border-color:#1e3a8a!important}
+[data-theme=dark] .bg-green-50{background-color:#052e16!important}
+[data-theme=dark] .border-green-200{border-color:#14532d!important}
+[data-theme=dark] .bg-teal-50{background-color:#001a18!important}
+[data-theme=dark] .border-teal-200{border-color:#134e4a!important}
+[data-theme=dark] .bg-red-50{background-color:#1a0006!important}
+[data-theme=dark] .border-red-200{border-color:#7f1d1d!important}
+</style>
 </head>
 <body class="min-h-screen bg-slate-50 flex items-center justify-center px-4">
 <div class="w-full max-w-sm">
@@ -35,6 +64,7 @@
 
 <script src="/app.js"></script>
 <script>
+  initTheme();
   if (getToken()) {
     const u = getUser();
     location.href = u?.team_id ? "/kanban.html" : "/team.html";
@@ -59,5 +89,6 @@
     }
   });
 </script>
+<button onclick="toggleTheme()" class="theme-toggle fixed top-4 right-4 z-50 text-lg w-9 h-9 flex items-center justify-center rounded-full bg-white shadow border border-slate-200 hover:bg-slate-50 transition-colors" title="다크 모드">🌙</button>
 </body>
 </html>
